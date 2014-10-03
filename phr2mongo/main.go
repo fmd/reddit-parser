@@ -1,8 +1,8 @@
 package main
 
 import (
-    "io/ioutil"
-    "github.com/docopt/docopt-go"
+	"github.com/docopt/docopt-go"
+	"io/ioutil"
 )
 
 var usage string = `jq2mongo.
