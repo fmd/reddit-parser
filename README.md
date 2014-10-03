@@ -21,5 +21,5 @@ ParseHub gets us as far as having a `posts` JSON object, containing several `pos
 ## Installation
 
 ```
-go get github.com/fmd/reddit-parser
+go get github.com/fmd/reddit-parser/...
 ```
