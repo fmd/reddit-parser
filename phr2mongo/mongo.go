@@ -25,6 +25,39 @@ func (m *Mongo) StartSession() error {
 	return nil
 }
 
+func (m *Mongo) Import(s Sub) error {
+	var err error
+
+	pC := m.Session.DB(m.Database).C("posts")
+	cC := m.Session.DB(m.Database).C("comments")
+
+	for pI := range(s.Posts) {
+		post := s.Posts[pI]
+
+		for cI := range(post.Comments) {
+			comment := post.Comments[cI]
+
+			err = cC.Insert(comment)
+			if err != nil {
+				return err
+			}
+		}
+
+		err = pC.Insert(post)
+		if err != nil {
+			return err
+		}
+
+		post.Comments = nil
+	}
+
+	return nil
+}
+
+func (m *Mongo) Drop() error {
+	return m.Session.DB(m.Database).DropDatabase()
+}
+
 func NewMongo(h string, d string) (*Mongo, error) {
 	m := &Mongo{
 		Hostname: h,
@@ -38,31 +71,3 @@ func NewMongo(h string, d string) (*Mongo, error) {
 
 	return m, nil
 }
-
-/*
-func main() {
-        session, err := mgo.Dial("server1.example.com,server2.example.com")
-        if err != nil {
-                panic(err)
-        }
-        defer session.Close()
-
-        // Optional. Switch the session to a monotonic behavior.
-        session.SetMode(mgo.Monotonic, true)
-
-        c := session.DB("test").C("people")
-        err = c.Insert(&Person{"Ale", "+55 53 8116 9639"},
-	               &Person{"Cla", "+55 53 8402 8510"})
-        if err != nil {
-                log.Fatal(err)
-        }
-
-        result := Person{}
-        err = c.Find(bson.M{"name": "Ale"}).One(&result)
-        if err != nil {
-                log.Fatal(err)
-        }
-
-        fmt.Println("Phone:", result.Phone)
-}
-*/

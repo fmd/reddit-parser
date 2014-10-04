@@ -17,14 +17,14 @@ func (p *Parser) Unmarshal() error {
 	var err error
 
 	// Unmarshal the JSON from the file into the `Sub` object.
-	err = json.Unmarshal(p.Content, &p.Sub)
+	err = json.Unmarshal(p.Content, &p.Sub.Posts)
 	if err != nil {
 		return err
 	}
 
 	// Loop over the posts in the sub,
 	for pI := range p.Sub.Posts {
-		post := p.Pub.Posts[pI]
+		post := p.Sub.Posts[pI]
 
 		// Convert the points into integers.
 		ip, err := strconv.Atoi(post.Points)
